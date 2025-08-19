@@ -19,6 +19,16 @@ export class EssentialsInstaller extends BaseInstaller {
       'unzip': 'unzip'
     };
 
+    // On Windows, just check for git as a minimum requirement
+    if (this.platform.isWindows) {
+      const hasGit = await checkCommandExists('git');
+      if (!hasGit) {
+        this.logger.debug('git not found on Windows');
+        return false;
+      }
+      return true;
+    }
+
     for (const [pkg, cmd] of Object.entries(commands)) {
       if (!await checkCommandExists(cmd)) {
         this.logger.debug(`${pkg} (${cmd}) not found`);
@@ -75,6 +85,16 @@ export class EssentialsInstaller extends BaseInstaller {
     const pm = await getPackageManager();
 
     if (!pm) {
+      if (this.platform.isWindows) {
+        this.logger.warn('Package installation skipped on Windows. Please install the following tools manually:');
+        this.logger.info('- Git: https://git-scm.com/download/win');
+        this.logger.info('- GitHub CLI: https://cli.github.com/');
+        this.logger.info('- ripgrep: https://github.com/BurntSushi/ripgrep/releases');
+        this.logger.info('- curl: Usually available in Windows 10+');
+        this.logger.info('- wget: Available via chocolatey or manual install');
+        this.logger.info('- unzip: Usually available in Windows');
+        return;
+      }
       throw new Error('No supported package manager found');
     }
 
@@ -107,11 +127,14 @@ export class EssentialsInstaller extends BaseInstaller {
   }
 
   async verify() {
-    const verifications = [
-      { name: 'Git', cmd: ['git', '--version'] },
-      { name: 'GitHub CLI', cmd: ['gh', '--version'] },
-      { name: 'ripgrep', cmd: ['rg', '--version'] }
-    ];
+    // On Windows, only verify git since other tools may not be installed
+    const verifications = this.platform.isWindows 
+      ? [{ name: 'Git', cmd: ['git', '--version'] }]
+      : [
+          { name: 'Git', cmd: ['git', '--version'] },
+          { name: 'GitHub CLI', cmd: ['gh', '--version'] },
+          { name: 'ripgrep', cmd: ['rg', '--version'] }
+        ];
 
     for (const { name, cmd } of verifications) {
       try {

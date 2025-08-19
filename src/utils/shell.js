@@ -197,7 +197,12 @@ export async function runWithProgressiveSpinner(initialMessage, fn) {
 
 export async function checkCommandExists(command) {
   try {
-    await execa('which', [command]);
+    // Use appropriate command existence check based on platform
+    if (process.platform === 'win32') {
+      await execa('where', [command]);
+    } else {
+      await execa('which', [command]);
+    }
     return true;
   } catch {
     return false;

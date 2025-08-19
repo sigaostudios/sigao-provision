@@ -37,6 +37,13 @@ export class CLIToolsInstaller extends BaseInstaller {
   async install() {
     this.logger.info('Installing modern CLI tools...');
 
+    // Skip on Windows
+    if (process.platform === 'win32') {
+      this.logger.warn('CLI tools installation is not supported on Windows.');
+      this.logger.info('Please install tools manually or use WSL for full functionality.');
+      return;
+    }
+
     // Update package lists
     await runCommand('sudo', ['apt', 'update']);
 
@@ -296,7 +303,8 @@ export class CLIToolsInstaller extends BaseInstaller {
   }
 
   async which(cmd) {
-    const { stdout } = await runCommand('which', [cmd]);
+    const whichCmd = process.platform === 'win32' ? 'where' : 'which';
+    const { stdout } = await runCommand(whichCmd, [cmd]);
     return stdout.trim();
   }
 

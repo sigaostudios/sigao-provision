@@ -28,7 +28,12 @@ export function isWSL() {
 
 export async function hasCommand(command) {
   try {
-    await execa('which', [command]);
+    // Use appropriate command existence check based on platform
+    if (process.platform === 'win32') {
+      await execa('where', [command]);
+    } else {
+      await execa('which', [command]);
+    }
     return true;
   } catch {
     return false;
@@ -81,8 +86,13 @@ export async function getOSInfo() {
   };
 }
 
-export function getPackageManager() {
+export async function getPackageManager() {
   const platform = getPlatform();
+
+  // Windows doesn't have a standard package manager for system packages
+  if (platform.isWindows) {
+    return null;
+  }
 
   if (platform.isLinux) {
     // Check for common package managers
@@ -95,9 +105,18 @@ export function getPackageManager() {
     ];
 
     // Return first available manager
-    return managers.find(m => hasCommand(m.cmd));
+    for (const manager of managers) {
+      if (await hasCommand(manager.cmd)) {
+        return manager;
+      }
+    }
+    return null;
   } else if (platform.isMac) {
-    return { cmd: 'brew', install: 'brew install', update: 'brew update', needsSudo: false };
+    // Check if brew is available
+    if (await hasCommand('brew')) {
+      return { cmd: 'brew', install: 'brew install', update: 'brew update', needsSudo: false };
+    }
+    return null;
   }
 
   return null;

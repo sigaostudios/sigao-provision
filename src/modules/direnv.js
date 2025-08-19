@@ -25,6 +25,13 @@ export class DirenvInstaller extends BaseInstaller {
       }
     }
 
+    // Skip on Windows
+    if (process.platform === 'win32') {
+      this.logger.warn('Direnv installation is not supported on Windows.');
+      this.logger.info('Please use WSL for direnv functionality.');
+      return;
+    }
+
     // Install via apt
     try {
       await runCommand('sudo', ['apt', 'update']);

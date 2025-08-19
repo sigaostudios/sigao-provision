@@ -235,9 +235,10 @@ eval "$(pyenv virtualenv-init -)"`;
     if (isUbuntu2404) {
       // Verify system Python installation
       try {
-        await runCommand('which', ['python3'], { silent: true });
-        await runCommand('which', ['pip3'], { silent: true });
-        await runCommand('which', ['pipx'], { silent: true });
+        const whichCmd = process.platform === 'win32' ? 'where' : 'which';
+        await runCommand(whichCmd, ['python3'], { silent: true });
+        await runCommand(whichCmd, ['pip3'], { silent: true });
+        await runCommand(whichCmd, ['pipx'], { silent: true });
         this.logger.success('System Python installation verified');
         return true;
       } catch (_error) {

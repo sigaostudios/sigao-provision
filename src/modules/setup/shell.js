@@ -146,7 +146,8 @@ export class ShellInstaller extends BaseInstaller {
     }
 
     // Get Zsh path
-    const { stdout: zshPath } = await runCommand('which', ['zsh']);
+    const whichCmd = process.platform === 'win32' ? 'where' : 'which';
+    const { stdout: zshPath } = await runCommand(whichCmd, ['zsh']);
     const cleanZshPath = zshPath.trim();
 
     // Add to /etc/shells if needed

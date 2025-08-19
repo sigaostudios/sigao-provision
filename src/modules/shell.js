@@ -15,9 +15,14 @@ export class ShellInstaller extends BaseInstaller {
   }
 
   async getAvailableLocale() {
+    // Windows doesn't use locale command, skip locale setup
+    if (process.platform === 'win32') {
+      return '';
+    }
+
     try {
       // Check available locales
-      const { stdout } = await runCommand('locale', ['-a'], { returnOutput: true });
+      const { stdout } = await runCommand('locale', ['-a'], { returnOutput: true, silent: true });
       const locales = stdout.split('\n').filter(l => l.trim());
       
       // Preferred locales in order
@@ -169,6 +174,12 @@ export class ShellInstaller extends BaseInstaller {
   }
 
   async installZsh() {
+    // Skip installation on Windows
+    if (process.platform === 'win32') {
+      this.logger.warn('Zsh installation is not supported on Windows. Please use WSL for full shell features.');
+      return;
+    }
+
     // Install Zsh
     if (!await checkCommandExists('zsh')) {
       this.logger.info('Installing Zsh...');
@@ -177,7 +188,8 @@ export class ShellInstaller extends BaseInstaller {
     }
 
     // Get Zsh path
-    const { stdout: zshPath } = await runCommand('which', ['zsh']);
+    const whichCmd = process.platform === 'win32' ? 'where' : 'which';
+    const { stdout: zshPath } = await runCommand(whichCmd, ['zsh']);
     const cleanZshPath = zshPath.trim();
 
     // Add to /etc/shells if needed
@@ -324,9 +336,12 @@ command -v starship &>/dev/null && eval "$(starship init zsh)"`;
   async enhanceBash() {
     this.logger.info('Enhancing Bash configuration...');
 
-    // Install bash completion
-    await runCommand('sudo', ['apt', 'update']);
-    await runCommand('sudo', ['apt', 'install', '-y', 'bash-completion']);
+    // Skip package installation on Windows
+    if (process.platform !== 'win32') {
+      // Install bash completion
+      await runCommand('sudo', ['apt', 'update']);
+      await runCommand('sudo', ['apt', 'install', '-y', 'bash-completion']);
+    }
 
     const bashrcPath = path.join(os.homedir(), '.bashrc');
     

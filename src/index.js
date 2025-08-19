@@ -174,6 +174,11 @@ export class Installer {
   }
 
   async fixLocaleSettings() {
+    // Skip locale settings on Windows
+    if (process.platform === 'win32') {
+      return;
+    }
+
     try {
       // Check if locale is properly set
       const { stdout: currentLocale } = await runCommand('locale', [], { silent: true }).catch(() => ({ stdout: '' }));
