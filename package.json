@@ -1,6 +1,6 @@
 {
   "name": "@sigaostudios/sigao-provision",
-  "version": "1.0.8",
+  "version": "1.0.9",
   "description": "Environment provisioning tool for setting up development environments with various tools and configurations",
   "main": "src/index.js",
   "type": "module",
