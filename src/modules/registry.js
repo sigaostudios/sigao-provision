@@ -1,18 +1,18 @@
-import { EssentialsInstaller } from './setup/essentials.js';
-import { GitInstaller } from './setup/git.js';
-import { GitEnhancedInstaller } from './setup/git-enhanced.js';
-import { NodeInstaller } from './setup/node.js';
-import { ClaudeInstaller } from './setup/claude.js';
-import { DotNetInstaller } from './setup/dotnet.js';
-import { DockerInstaller } from './setup/docker.js';
-import { PythonInstaller } from './setup/python.js';
-import { PythonToolsInstaller } from './setup/python-tools.js';
-import { ShellInstaller } from './setup/shell.js';
-import { DirenvInstaller } from './setup/direnv.js';
-import { CLIToolsInstaller } from './setup/cli-tools.js';
-import { ShellEnhancementsInstaller } from './setup/shell-enhancements.js';
-import { AzureCliInstaller } from './setup/azure-cli.js';
-import { CargoInstaller } from './setup/cargo.js';
+import { EssentialsInstaller } from './essentials.js';
+import { GitInstaller } from './git.js';
+import { GitEnhancedInstaller } from './git-enhanced.js';
+import { NodeInstaller } from './node.js';
+import { ClaudeInstaller } from './claude.js';
+import { DotNetInstaller } from './dotnet.js';
+import { DockerInstaller } from './docker.js';
+import { PythonInstaller } from './python.js';
+import { PythonToolsInstaller } from './python-tools.js';
+import { ShellInstaller } from './shell.js';
+import { DirenvInstaller } from './direnv.js';
+import { CLIToolsInstaller } from './cli-tools.js';
+import { ShellEnhancementsInstaller } from './shell-enhancements.js';
+import { AzureCliInstaller } from './azure-cli.js';
+import { CargoInstaller } from './cargo.js';
 
 const installerMap = {
   'essentials': EssentialsInstaller,

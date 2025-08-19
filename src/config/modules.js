@@ -152,22 +152,3 @@ export function getEnabledModules() {
 export function sortModulesByPriority(moduleList) {
   return [...moduleList].sort((a, b) => a.priority - b.priority);
 }
-
-export const categories = [
-  {
-    name: 'Core Tools',
-    modules: ['shell', 'essentials', 'git-config']
-  },
-  {
-    name: 'Development Environments',
-    modules: ['node', 'python', 'python-tools', 'dotnet', 'docker', 'cargo']
-  },
-  {
-    name: 'CLI Enhancements',
-    modules: ['cli-tools', 'shell-enhancements', 'direnv']
-  },
-  {
-    name: 'Cloud & Services',
-    modules: ['claude', 'azure-cli']
-  }
-];
